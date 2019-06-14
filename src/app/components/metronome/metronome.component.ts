@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
+import { TimeInterval } from 'rxjs';
 
 @Component({
   selector: 'app-metronome',
@@ -33,10 +34,10 @@ export class MetronomeComponent implements OnInit {
     this.intervalTicker = setInterval(() => {
       console.log('tick on beat ' + beat);
       if (beat === 0) {
-        $this.oscillator.frequency.value = 440; // Hz
+        $this.oscillator.frequency.value = 520; // Hz
         beat = this.beats;
       } else {
-        $this.oscillator.frequency.value = 520; // Hz
+        $this.oscillator.frequency.value = 440; // Hz
       }
       $this.oscillator.connect($this.audioContext.destination);
       beat--;
