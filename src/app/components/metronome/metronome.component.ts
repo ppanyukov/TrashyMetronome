@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
-import { TimeInterval } from 'rxjs';
 
 @Component({
   selector: 'app-metronome',
@@ -16,23 +15,30 @@ export class MetronomeComponent implements OnInit {
   oscillator: OscillatorNode;
   intervalTicker;
 
+  isStarted = false;
+
+
   ngOnInit() {
     console.log('constructing metronome: ' + this.tempo);
+  }
+
+  start() {
+    // setup basic oscillator
     this.audioContext = new AudioContext();
     this.oscillator = this.audioContext.createOscillator();
-
-    // setup basic oscillator
     this.oscillator.type = 'sine'; // this is the default - also square, sawtooth, triangle
     this.oscillator.frequency.value = 0; // Hz
-
-    const $this = this;
-
     this.oscillator.start();
 
+    const $this = this;
     let beat = 0;
 
     this.intervalTicker = setInterval(() => {
-      console.log('tick on beat ' + beat);
+      if (!$this.isStarted) {
+        return;
+      }
+
+      // console.log('tick on beat ' + beat);
       if (beat === 0) {
         $this.oscillator.frequency.value = 520; // Hz
         beat = this.beats;
@@ -45,6 +51,16 @@ export class MetronomeComponent implements OnInit {
         $this.oscillator.disconnect($this.audioContext.destination);
       }, 200);
     }, 1000 * 60 / this.tempo);
+
+    this.isStarted = true;
+  }
+
+  stop() {
+    clearInterval(this.intervalTicker);
+    this.oscillator.stop();
+    this.oscillator.disconnect();
+    this.audioContext.close();
+    this.isStarted = false;
   }
 
 }
