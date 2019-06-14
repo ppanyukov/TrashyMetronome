@@ -23,6 +23,11 @@ export class MetronomeComponent implements OnInit {
   }
 
   start() {
+    // Fugly iOS hack? See: https://stackoverflow.com/questions/48757933/audiocontext-issue-on-safari?rq=1
+    // create web audio api context
+    (window as any).AudioContext = (window as any).AudioContext || (window as any).webkitAudioContext;
+    this.audioContext = new AudioContext();
+
     // setup basic oscillator
     this.audioContext = new AudioContext();
     this.oscillator = this.audioContext.createOscillator();
